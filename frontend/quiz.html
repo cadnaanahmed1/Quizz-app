@@ -301,10 +301,11 @@
 
   // ✅ Halkan ayaa lagu daray auto-save haddii ay tahay su’aasha ugu dambeysa
   if (currentIndex === quizzes.length - 1) {
-  
+  setTimeout(() => {
+    showFinalResult(); // Score saved after 2 seconds
+  }, 2000); // 2000 milliseconds = 2 seconds
+}
 
-    showFinalResult(); // Score saved immediately after last question
-  }
 });
 
 
