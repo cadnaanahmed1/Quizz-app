@@ -259,12 +259,13 @@
     optionsForm.addEventListener("change", () => {
       const selected = optionsForm.querySelector('input[type="radio"]:checked');
       submitBtn.disabled = !selected || answered;
-      nextBtn.style.display = "none";
+     
 
     }, { once: true });
 
     // ✅ Halkan ayaa lagu daray shardi cusub
     if (currentIndex === quizzes.length - 1) {
+       nextBtn.style.display = "none";
       nextBtn.textContent = "Go to View Your Score";
     } else {
       nextBtn.textContent = "Next Question";
