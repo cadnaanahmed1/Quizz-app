@@ -88,6 +88,11 @@ app.post("/api/results", async (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.send('Quiz API is running ✅');
+});
+
+
 // Delete all quizzes - for admin (should protect with PIN in real app)
 app.delete("/api/quizzes", async (req, res) => {
   try {
