@@ -123,37 +123,36 @@
   }
 
   async function fetchResults() {
-    try {
-      const res = await fetch("https://quizz-app-2-b130.onrender.com/api/results");
-      const results = await res.json();
+  try {
+    const res = await fetch("https://quizz-app-2-b130.onrender.com/api/results");
+    const results = await res.json();
 
-      results.sort((a, b) => b.score - a.score);
+    results.sort((a, b) => b.score - a.score);
 
-      // Halkan ka hel total default haddii la waayo mid gaar ah
-      const defaultTotal = await getDefaultTotal();
+    const defaultTotal = await getDefaultTotal();
+    const tbody = document.querySelector("#resultsTable tbody");
+    tbody.innerHTML = "";
 
-      const tbody = document.querySelector("#resultsTable tbody");
-      tbody.innerHTML = "";
+    results.forEach((result, index) => {
+      const tr = document.createElement("tr"); // ✅ ADD THIS
+      const date = new Date(result.date).toLocaleString();
+      const totalToShow = result.total ?? defaultTotal;
 
-      results.forEach((result, index) => {
-        const date = new Date(result.date).toLocaleString();
-        const totalToShow = result.total ?? defaultTotal;
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${result.username}</td>
+        <td>${result.score} / ${totalToShow}</td>
+        <td>${date}</td>
+      `;
 
-        tr.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${result.username}</td>
-            <td>${result.score} / ${totalToShow}</td>
-            <td>${date}</td>
-            `;
-
-        ;
-        tbody.appendChild(tr);
-      });
-    } catch (error) {
-      alert("Failed to load results.");
-      console.error(error);
-    }
+      tbody.appendChild(tr);
+    });
+  } catch (error) {
+    alert("Failed to load results.");
+    console.error(error);
   }
+}
+
 
   document.getElementById("backBtn").addEventListener("click", () => {
     window.location.href = "index.html";
