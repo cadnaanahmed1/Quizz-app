@@ -189,7 +189,7 @@
   const usernameInput = document.getElementById("username");
   const quizContainer = document.getElementById("quizContainer");
   const startBtn = document.getElementById("startBtn");
-  //let quizzes = []; // ← waa inuu yahay meel sare oo global ah
+  let totalQuestionsAnswered = 0;
 
   let quizzes = [];
   let currentIndex = 0;
@@ -254,10 +254,10 @@ async function fetchQuizzes() {
       const label = document.createElement("label");
       label.classList.add("option");
       label.htmlFor = optionId;
-      label.innerHTML = 
+      label.innerHTML = `
         <input type="radio" id="${optionId}" name="option" value="${idx}">
         ${option}
-      ;
+      `;
       optionsForm.appendChild(label);
     });
 
@@ -268,7 +268,6 @@ async function fetchQuizzes() {
 
     }, { once: true });
 
-    // ✅ Halkan ayaa lagu daray shardi cusub
     if (currentIndex === quizzes.length - 1) {
        nextBtn.style.display = "none";
       nextBtn.textContent = "Go to View Your Score";
@@ -278,6 +277,8 @@ async function fetchQuizzes() {
   }
 
  submitBtn.addEventListener("click", (e) => {
+   totalQuestionsAnswered++;
+
   e.preventDefault();
   if (answered) return;
 
@@ -304,11 +305,10 @@ async function fetchQuizzes() {
     score++;
   }
 
-  // ✅ Halkan ayaa lagu daray auto-save haddii ay tahay su’aasha ugu dambeysa
   if (currentIndex === quizzes.length - 1) {
   setTimeout(() => {
     showFinalResult(); // Score saved after 2 seconds
-  }, 1000); // 2000 milliseconds = 2 seconds
+  }, 1000);
 }
 
 });
@@ -335,20 +335,23 @@ async function fetchQuizzes() {
   viewScoreBtn.style.display = "inline-block";
 
   const username = usernameInput.value.trim();
+   
 
+ if (currentIndex === quizzes.length - 1) {
   fetch(SCORES_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ 
       username, 
       score, 
-      total: quizzes.length
+      total: totalQuestionsAnswered,
     })
   }).catch((err) => {
     console.error("Failed to auto-save score", err);
   });
-}
 
+  // showFinalResult(); ← KA SAAR TAN WAA NAFTEEDA!
+}
 
 
 viewScoreBtn.addEventListener("click", () => {
