@@ -119,7 +119,7 @@
 
     async function checkExistingQuestions() {
       try {
-        const res = await fetch("http://localhost:5000/api/quizzes");
+        const res = await fetch("https://quizz-app-2-b130.onrender.com/api/quizzes");
         const data = await res.json();
         if (data.length > 0) {
           showMessage("❌ Questions already exist. Please delete them first.", "error");
@@ -198,7 +198,7 @@
       }
 
       try {
-        const res = await fetch("http://localhost:5000/api/quizzes/bulk", {
+        const res = await fetch("https://quizz-app-2-b130.onrender.com/api/quizzes/bulk", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(allQuestions)
