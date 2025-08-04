@@ -32,12 +32,13 @@ const quizSchema = new mongoose.Schema({
 
 const Quiz = mongoose.model("Quiz", quizSchema);
 
-// Result Schema
 const resultSchema = new mongoose.Schema({
   username: { type: String, required: true },
   score: { type: Number, required: true },
+  total: { type: Number, required: true }, // ← KAN KU DAR
   date: { type: Date, default: Date.now }
 });
+
 
 const Result = mongoose.model("Result", resultSchema);
 
