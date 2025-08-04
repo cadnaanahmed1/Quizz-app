@@ -189,166 +189,112 @@
   const quizContainer = document.getElementById("quizContainer");
   const startBtn = document.getElementById("startBtn");
 
-  let quizzes = [];
   let currentIndex = 0;
-  let score = 0;
-  let answered = false;
-  let totalQuestionsAnswered = 0;
+let score = 0;
+let totalQuestionsAnswered = 0;
+let quizzes = [];
 
-  const API_URL = "https://quizz-app-2-b130.onrender.com/api/quizzes";
-  const SCORES_URL = "https://quizz-app-2-b130.onrender.com/api/results";
-
-  async function fetchQuizzes() {
-    try {
-      const res = await fetch(API_URL);
-      if (!res.ok) throw new Error("Failed to fetch quizzes");
-      quizzes = await res.json();
-
-      if (quizzes.length === 0) {
-        quizContainer.innerHTML = "<p>No quiz questions available. Please add some first.</p>";
-        submitBtn.style.display = "none";
-        nextBtn.style.display = "none";
-        return;
-      }
-
-      loadQuestion();
-    } catch (error) {
-      quizContainer.innerHTML = "<p>Error loading quizzes. Please try again later.</p>";
-      console.error(error);
-      submitBtn.style.display = "none";
-      nextBtn.style.display = "none";
-    }
-  }
-
-  startBtn.addEventListener("click", () => {
-    const name = usernameInput.value.trim();
-    if (!name) {
-      alert("Fadlan geli magacaaga si aad u bilowdo quiz-ka.");
+async function fetchQuizzes() {
+  try {
+    const res = await fetch("https://quizz-app-2-b130.onrender.com/api/quizzes");
+    quizzes = await res.json();
+    if (quizzes.length === 0) {
+      quizContainer.innerHTML = "<p>No quiz questions available.</p>";
       return;
     }
-
-    startBtn.style.display = "none";
-    usernameInput.disabled = true;
     quizContainer.style.display = "block";
     submitBtn.style.display = "inline-block";
     nextBtn.style.display = "inline-block";
+    loadQuestion();
+  } catch (error) {
+    alert("Failed to load quizzes.");
+  }
+}
 
-    fetchQuizzes();
+function loadQuestion() {
+  const quiz = quizzes[currentIndex];
+  questionEl.textContent = `Q${currentIndex + 1}: ${quiz.question}`;
+  optionsEl.innerHTML = "";
+  quiz.options.forEach((option, idx) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <input type="radio" name="option" id="option${idx}" value="${idx}" />
+      <label for="option${idx}">${option}</label>
+    `;
+    optionsEl.appendChild(li);
   });
 
-  function loadQuestion() {
-    answered = false;
-    submitBtn.disabled = true;
-    nextBtn.disabled = true;
-    resultEl.textContent = "";
-    viewScoreBtn.style.display = "none";
+  submitBtn.disabled = false;
+  nextBtn.disabled = true;
+}
 
-    const quiz = quizzes[currentIndex];
-    questionEl.textContent = `Q${currentIndex + 1}: ${quiz.question}`;
-
-    optionsForm.innerHTML = "";
-    quiz.options.forEach((option, idx) => {
-      const optionId = `option${idx}`;
-      const label = document.createElement("label");
-      label.classList.add("option");
-      label.htmlFor = optionId;
-      label.innerHTML = `
-        <input type="radio" id="${optionId}" name="option" value="${idx}">
-        ${option}
-      `;
-      optionsForm.appendChild(label);
-    });
-
-    optionsForm.addEventListener("change", () => {
-      const selected = optionsForm.querySelector('input[type="radio"]:checked');
-      submitBtn.disabled = !selected || answered;
-    }, { once: true });
-
-    if (currentIndex === quizzes.length - 1) {
-      nextBtn.style.display = "none";
-    } else {
-      nextBtn.textContent = "Next Question";
-    }
+submitBtn.addEventListener("click", () => {
+  const selectedOption = document.querySelector("input[name='option']:checked");
+  if (!selectedOption) {
+    alert("Please select an answer");
+    return;
   }
 
-  submitBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    if (answered) return;
+  totalQuestionsAnswered++; // ← Count the submitted question
 
-    totalQuestionsAnswered++;
+  const answer = parseInt(selectedOption.value);
+  if (answer === quizzes[currentIndex].correctAnswer) {
+    score++;
+  }
 
-    const quiz = quizzes[currentIndex];
-    const selectedOption = optionsForm.querySelector('input[type="radio"]:checked');
-    if (!selectedOption) return;
+  submitBtn.disabled = true;
+  nextBtn.disabled = false;
+});
 
-    const selectedIndex = Number(selectedOption.value);
-    answered = true;
-    submitBtn.disabled = true;
-    nextBtn.disabled = false;
+nextBtn.addEventListener("click", () => {
+  currentIndex++;
+  if (currentIndex < quizzes.length) {
+    loadQuestion();
+  } else {
+    showFinalResult();
+  }
+});
 
-    const labels = optionsForm.querySelectorAll("label.option");
-    labels.forEach((label, idx) => {
-      const isCorrect = idx === quiz.correctAnswer;
-      const isSelected = idx === selectedIndex;
+viewScoreBtn.addEventListener("click", async () => {
+  const username = usernameInput.value.trim();
+  if (!username) {
+    alert("Please enter your name");
+    return;
+  }
 
-      if (isCorrect) label.classList.add("correct");
-      if (isSelected && !isCorrect) label.classList.add("wrong");
-      label.querySelector("input").disabled = true;
+  try {
+    const res = await fetch("https://quizz-app-2-b130.onrender.com/api/results", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username,
+        score,
+        total: totalQuestionsAnswered, // ← Send only answered questions
+      }),
     });
 
-    if (selectedIndex === quiz.correctAnswer) {
-      score++;
-    }
-
-    if (currentIndex === quizzes.length - 1) {
-      setTimeout(() => {
-        showFinalResult();
-      }, 1000);
-    }
-  });
-
-  nextBtn.addEventListener("click", () => {
-    currentIndex++;
-    if (currentIndex < quizzes.length) {
-      loadQuestion();
+    if (res.ok) {
+      resultEl.textContent = `${username}, Quiz Complete! Your score: ${score} / ${totalQuestionsAnswered}`;
+      viewScoreBtn.style.display = "none";
     } else {
-      showFinalResult();
+      alert("Failed to save result");
     }
-  });
-
-  viewScoreBtn.addEventListener("click", () => {
-    const username = usernameInput.value.trim();
-    resultEl.textContent = `${username}, Quiz Complete! Your final score: ${score} / ${quizzes.length}`;
-    viewScoreBtn.style.display = "none";
-  });
-
-  backBtn.addEventListener("click", () => {
-    window.location.href = "index.html";
-  });
-
-  function showFinalResult() {
-    questionEl.style.display = "none";
-    optionsForm.style.display = "none";
-    submitBtn.style.display = "none";
-    nextBtn.style.display = "none";
-    viewScoreBtn.style.display = "inline-block";
-
-    const username = usernameInput.value.trim();
-
-    if (currentIndex === quizzes.length - 1) {
-      fetch(SCORES_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          score,
-          total: totalQuestionsAnswered,
-        }),
-      }).catch((err) => {
-        console.error("Failed to auto-save score", err);
-      });
-    }
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong");
   }
+});
+
+function showFinalResult() {
+  quizContainer.innerHTML = "";
+  questionEl.textContent = "";
+  optionsEl.innerHTML = "";
+  submitBtn.style.display = "none";
+  nextBtn.style.display = "none";
+  usernameInput.style.display = "inline-block";
+  viewScoreBtn.style.display = "inline-block";
+}
+
 </script>
 </body>
 </html>
