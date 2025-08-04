@@ -327,15 +327,20 @@
 
   const username = usernameInput.value.trim();
 
-  // 💾 Auto-save the score immediately after the last question
+  // 💾 Auto-save the score + total after the last question
   fetch(SCORES_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, score })
+    body: JSON.stringify({ 
+      username, 
+      score, 
+      total: quizzes.length // <-- Total number of questions added
+    })
   }).catch((err) => {
     console.error("Failed to auto-save score", err);
   });
 }
+
 
 
   viewScoreBtn.addEventListener("click", () => {
