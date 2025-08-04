@@ -266,7 +266,7 @@
 
     async function clearQuestions() {
       try {
-        const res = await fetch("http://localhost:5000/api/quizzes", {
+        const res = await fetch("https://quizz-app-2-b130.onrender.com/api/quizzes", {
           method: "DELETE",
         });
         if (res.ok) {
@@ -282,7 +282,7 @@
 
     async function clearResults() {
       try {
-        const res = await fetch("http://localhost:5000/api/results", {
+        const res = await fetch("https://quizz-app-2-b130.onrender.com/api/results", {
           method: "DELETE",
         });
         if (res.ok) {
