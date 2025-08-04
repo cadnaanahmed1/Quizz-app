@@ -158,6 +158,11 @@ app.get("/api/results/total-default", async (req, res) => {
   }
 });
 
+app.get("/api/results/total-default", (req, res) => {
+  res.json({ defaultTotal: 5 }); // ama quizzes.length
+});
+
+
 
 
 
