@@ -198,25 +198,29 @@
   const API_URL = "https://quizz-app-2-b130.onrender.com/api/quizzes";
   const SCORES_URL = "https://quizz-app-2-b130.onrender.com/api/results";
 
-  async function fetchQuizzes() {
-    try {
-      const res = await fetch(API_URL);
-      if (!res.ok) throw new Error("Failed to fetch quizzes");
-      quizzes = await res.json();
-      if (quizzes.length === 0) {
-        quizContainer.innerHTML = "<p>No quiz questions available. Please add some first.</p>";
-        submitBtn.style.display = "none";
-        nextBtn.style.display = "none";
-        return;
-      }
-      loadQuestion();
-    } catch (error) {
-      quizContainer.innerHTML = "<p>Error loading quizzes. Please try again later.</p>";
-      console.error(error);
+async function fetchQuizzes() {
+  try {
+    const res = await fetch(API_URL);
+    if (!res.ok) throw new Error("Failed to fetch quizzes");
+    quizzes = await res.json();
+
+    console.log("Quizzes fetched:", quizzes);
+    console.log("Number of quizzes:", quizzes.length);
+
+    if (quizzes.length === 0) {
+      quizContainer.innerHTML = "<p>No quiz questions available. Please add some first.</p>";
       submitBtn.style.display = "none";
       nextBtn.style.display = "none";
+      return;
     }
+    loadQuestion();
+  } catch (error) {
+    quizContainer.innerHTML = "<p>Error loading quizzes. Please try again later.</p>";
+    console.error(error);
+    submitBtn.style.display = "none";
+    nextBtn.style.display = "none";
   }
+}
 
   startBtn.addEventListener("click", () => {
     const name = usernameInput.value.trim();
@@ -318,7 +322,11 @@
     }
   });
 
-  function showFinalResult() {
+ function showFinalResult() {
+  console.log("Showing final result...");
+  console.log("Current quizzes array:", quizzes);
+  console.log("Number of quizzes:", quizzes.length);
+
   questionEl.style.display = "none";
   optionsForm.style.display = "none";
   submitBtn.style.display = "none";
@@ -327,14 +335,13 @@
 
   const username = usernameInput.value.trim();
 
-  // 💾 Auto-save the score + total after the last question
   fetch(SCORES_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ 
       username, 
       score, 
-      total: quizzes.length // <-- Total number of questions added
+      total: quizzes.length
     })
   }).catch((err) => {
     console.error("Failed to auto-save score", err);
@@ -343,12 +350,13 @@
 
 
 
-  viewScoreBtn.addEventListener("click", () => {
+ viewScoreBtn.addEventListener("click", () => {
+  console.log("View score clicked. quizzes.length =", quizzes.length);
   const username = usernameInput.value.trim();
   resultEl.textContent = `${username}, Quiz Complete! Your final score: ${score} / ${quizzes.length}`;
   viewScoreBtn.style.display = "none";
-  //backBtn.style.display = "inline-block";
 });
+
 
 
   backBtn.addEventListener("click", () => {
