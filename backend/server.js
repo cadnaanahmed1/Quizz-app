@@ -145,6 +145,18 @@ app.delete("/api/results", async (req, res) => {
   }
 });
 
+app.get("/api/results/total-default", async (req, res) => {
+  try {
+    const resultWithTotal = await Result.find({ total: { $exists: true, $ne: null } })
+      .sort({ date: -1 })
+      .limit(1);
+    
+    const defaultTotal = resultWithTotal.length > 0 ? resultWithTotal[0].total : "?";
+    res.json({ defaultTotal });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 
