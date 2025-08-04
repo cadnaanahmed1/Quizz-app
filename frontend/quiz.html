@@ -269,33 +269,39 @@
     }
   }
 
-  submitBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    if (answered) return;
+ submitBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  if (answered) return;
 
-    const quiz = quizzes[currentIndex];
-    const selectedOption = optionsForm.querySelector('input[type="radio"]:checked');
-    if (!selectedOption) return;
+  const quiz = quizzes[currentIndex];
+  const selectedOption = optionsForm.querySelector('input[type="radio"]:checked');
+  if (!selectedOption) return;
 
-    const selectedIndex = Number(selectedOption.value);
-    answered = true;
-    submitBtn.disabled = true;
-    nextBtn.disabled = false;
+  const selectedIndex = Number(selectedOption.value);
+  answered = true;
+  submitBtn.disabled = true;
+  nextBtn.disabled = false;
 
-    const labels = optionsForm.querySelectorAll("label.option");
-    labels.forEach((label, idx) => {
-      const isCorrect = idx === quiz.correctAnswer;
-      const isSelected = idx === selectedIndex;
+  const labels = optionsForm.querySelectorAll("label.option");
+  labels.forEach((label, idx) => {
+    const isCorrect = idx === quiz.correctAnswer;
+    const isSelected = idx === selectedIndex;
 
-      if (isCorrect) label.classList.add("correct");
-      if (isSelected && !isCorrect) label.classList.add("wrong");
-      label.querySelector("input").disabled = true;
-    });
-
-    if (selectedIndex === quiz.correctAnswer) {
-      score++;
-    }
+    if (isCorrect) label.classList.add("correct");
+    if (isSelected && !isCorrect) label.classList.add("wrong");
+    label.querySelector("input").disabled = true;
   });
+
+  if (selectedIndex === quiz.correctAnswer) {
+    score++;
+  }
+
+  // ✅ Halkan ayaa lagu daray auto-save haddii ay tahay su’aasha ugu dambeysa
+  if (currentIndex === quizzes.length - 1) {
+    showFinalResult(); // Score saved immediately after last question
+  }
+});
+
 
   nextBtn.addEventListener("click", () => {
     currentIndex++;
