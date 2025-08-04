@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz System Home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      color: #fff;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 32px;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #ccc;
+      margin-bottom: 20px;
+    }
+
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #ffffff10;
+      color: #fff;
+      border: 1px solid #ffffff33;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #ffffff22;
+    }
+
+    .footer {
+      font-size: 13px;
+      color: #aaa;
+      margin-top: 10px;
+    }
+
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-content {
+      background-color: #1e2a38;
+      margin: 10% auto;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      color: #fff;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #fff;
+    }
+
+    input[type="password"] {
+      padding: 12px;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin: 20px 0;
+      font-size: 16px;
+    }
+
+    .error {
+      color: #ff7b7b;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .btn-group {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 25px 20px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .btn {
+        font-size: 14px;
+        padding: 12px;
+      }
+
+      .modal-content {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Quiz Management System</h1>
+    <p class="subtitle">Create, manage and take quizzes easily</p>
+
+    <div class="btn-group">
+      <button id="createBtn" class="btn"><i class="fas fa-pen-to-square"></i> Create</button>
+      <button id="takeQuizBtn" class="btn"><i class="fas fa-brain"></i> Take Quiz</button>
+      <button id="viewResultsBtn" class="btn"><i class="fas fa-chart-bar"></i> View Results</button>
+      <button id="clearBtn" class="btn"><i class="fas fa-eraser"></i> Clear Questions</button>
+      <button id="clearResultsBtn" class="btn"><i class="fas fa-trash-alt"></i> Clear Results</button>
+    </div>
+
+    <div class="footer">© 2025 Asayr Quiz System</div>
+  </div>
+
+  <!-- PIN Modal -->
+  <div id="pinModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" class="close">&times;</span>
+      <h2>Enter PIN</h2>
+      <input type="password" id="pinInput" placeholder="Enter your PIN" />
+      <button id="submitPinBtn" class="btn">Submit</button>
+      <p id="pinError" class="error"></p>
+    </div>
+  </div>
+
+  <!-- JS script not changed -->
+  <script>
+    const createBtn = document.getElementById("createBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const takeQuizBtn = document.getElementById("takeQuizBtn");
+    const viewResultsBtn = document.getElementById("viewResultsBtn");
+    const clearResultsBtn = document.getElementById("clearResultsBtn");
+
+    const pinModal = document.getElementById("pinModal");
+    const closeModal = document.getElementById("closeModal");
+    const submitPinBtn = document.getElementById("submitPinBtn");
+    const pinInput = document.getElementById("pinInput");
+    const pinError = document.getElementById("pinError");
+
+    let currentAction = null;
+
+    takeQuizBtn.addEventListener("click", () => {
+      window.location.href = "quiz.html";
+    });
+
+    viewResultsBtn.addEventListener("click", () => {
+      window.location.href = "results.html";
+    });
+
+    createBtn.addEventListener("click", () => {
+      currentAction = "create";
+      openModal();
+    });
+
+    clearBtn.addEventListener("click", () => {
+      currentAction = "clear";
+      openModal();
+    });
+
+    clearResultsBtn.addEventListener("click", () => {
+      currentAction = "clearResults";
+      openModal();
+    });
+
+    closeModal.addEventListener("click", closeModalFunc);
+
+    function openModal() {
+      pinInput.value = "";
+      pinError.textContent = "";
+      pinModal.style.display = "block";
+      pinInput.focus();
+    }
+
+    function closeModalFunc() {
+      pinModal.style.display = "none";
+    }
+
+    function validatePin(pin) {
+      const allowedPins = ["45", "89", "99"];
+      return allowedPins.includes(pin);
+    }
+
+    submitPinBtn.addEventListener("click", () => {
+      const pin = pinInput.value.trim();
+      if (validatePin(pin)) {
+        pinError.textContent = "";
+        closeModalFunc();
+
+        if (currentAction === "create") {
+          window.location.href = "create.html";
+        } else if (currentAction === "clear") {
+          if (confirm("Are you sure you want to clear all questions?")) {
+            clearQuestions();
+          }
+        } else if (currentAction === "clearResults") {
+          if (confirm("Are you sure you want to delete all quiz results?")) {
+            clearResults();
+          }
+        }
+      } else {
+        pinError.textContent = "Invalid PIN. Please try again.";
+      }
+    });
+
+    async function clearQuestions() {
+      try {
+        const res = await fetch("http://localhost:5000/api/quizzes", {
+          method: "DELETE",
+        });
+        if (res.ok) {
+          alert("All questions cleared successfully!");
+        } else {
+          alert("Failed to clear questions.");
+        }
+      } catch (error) {
+        alert("Error clearing questions.");
+        console.error(error);
+      }
+    }
+
+    async function clearResults() {
+      try {
+        const res = await fetch("http://localhost:5000/api/results", {
+          method: "DELETE",
+        });
+        if (res.ok) {
+          alert("All results cleared successfully!");
+        } else {
+          alert("Failed to clear results.");
+        }
+      } catch (error) {
+        alert("Error clearing results.");
+        console.error(error);
+      }
+    }
+
+    window.onclick = function(event) {
+      if (event.target == pinModal) {
+        closeModalFunc();
+      }
+    };
+  </script>
+</body>
+</html>

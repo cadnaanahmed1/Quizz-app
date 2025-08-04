@@ -1,0 +1,147 @@
+/* General Body Style */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #333;
+  padding: 30px 20px;
+  max-width: 700px;
+  margin: 40px auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  background-color: #fff; /* fallback */
+}
+
+/* Header */
+h1 {
+  text-align: center;
+  font-weight: 700;
+  color: #4a148c;
+  margin-bottom: 30px;
+  text-shadow: 0 2px 5px rgba(74,20,140,0.3);
+}
+
+/* Form Labels */
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #4a148c;
+}
+
+/* Text Inputs */
+input[type="text"] {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 2px solid #b39ddb;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  border-color: #7e57c2;
+  outline: none;
+  box-shadow: 0 0 5px #7e57c2;
+}
+
+/* Answer Group */
+.answer-group {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Radio Buttons */
+input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #7e57c2;
+  transition: accent-color 0.3s ease;
+}
+
+input[type="radio"]:hover {
+  accent-color: #4a148c;
+}
+
+/* Buttons */
+button {
+  display: block;
+  width: 100%;
+  background-color: #7e57c2;
+  border: none;
+  color: white;
+  padding: 14px 0;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 25px;
+  box-shadow: 0 6px 12px rgba(126,87,194,0.4);
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #512da8;
+  box-shadow: 0 8px 18px rgba(81,45,168,0.6);
+}
+
+/* Questions List */
+#questionsList {
+  margin-top: 40px;
+  border-top: 2px solid #b39ddb;
+  padding-top: 20px;
+}
+
+/* Individual Question Item */
+.question-item {
+  background-color: #ede7f6;
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.question-item:hover {
+  transform: translateY(-4px);
+}
+
+/* Question Text */
+.question-text {
+  font-weight: 700;
+  color: #311b92;
+  margin-bottom: 10px;
+}
+
+/* Answers List */
+.answers-list {
+  list-style-type: disc;
+  padding-left: 20px;
+  color: #512da8;
+  font-weight: 600;
+}
+
+/* Back Button */
+#backBtn {
+  background-color: #512da8;
+  margin-top: 40px;
+}
+
+#backBtn:hover {
+  background-color: #311b92;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  body {
+    padding: 20px 10px;
+    margin: 20px auto;
+  }
+  button {
+    font-size: 16px;
+    padding: 12px 0;
+  }
+}

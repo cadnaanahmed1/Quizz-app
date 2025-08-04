@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz Leaderboard</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #f8f9fa, #e3f2fd);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      color: #1e88e5;
+      margin-bottom: 30px;
+      font-size: 36px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+      width: 100%;
+      max-width: 800px;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 16px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    th {
+      background: #1e88e5;
+      color: white;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f6f9fc;
+    }
+
+    tr:hover {
+      background-color: #e3f2fd;
+      transition: background-color 0.3s ease;
+    }
+
+    #backBtn {
+      margin-top: 30px;
+      padding: 12px 25px;
+      font-size: 16px;
+      color: white;
+      background: #1e88e5;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    #backBtn:hover {
+      background: #1565c0;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 600px) {
+      th, td {
+        padding: 12px 8px;
+        font-size: 14px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      #backBtn {
+        font-size: 14px;
+        padding: 10px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Quiz Leaderboard</h1>
+
+  <table id="resultsTable">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Username</th>
+        <th>Score</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Results will be inserted here -->
+    </tbody>
+  </table>
+
+  <button id="backBtn">Back to Home</button>
+
+  <script>
+    async function fetchResults() {
+      try {
+        const res = await fetch("http://localhost:5000/api/results");
+        const results = await res.json();
+
+        // Sort by score descending
+        results.sort((a, b) => b.score - a.score);
+
+        const tbody = document.querySelector("#resultsTable tbody");
+        tbody.innerHTML = "";
+
+        results.forEach((result, index) => {
+          const date = new Date(result.date).toLocaleString();
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${result.username}</td>
+            <td>${result.score}</td>
+            <td>${date}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (error) {
+        alert("Failed to load results.");
+        console.error(error);
+      }
+    }
+
+    document.getElementById("backBtn").addEventListener("click", () => {
+      window.location.href = "index.html";
+    });
+
+    fetchResults();
+  </script>
+</body>
+</html>
+

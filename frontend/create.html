@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Quiz Questions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 25px;
+    }
+
+    .question-block {
+      background: #f8f9fc;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    button {
+      padding: 12px 25px;
+      margin: 10px 5px 0 0;
+      background-color: #007bff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    #message {
+      font-weight: bold;
+      margin-top: 25px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    #message.success {
+      color: green;
+    }
+
+    #message.error {
+      color: red;
+    }
+
+    @media screen and (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+
+      button {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Create Multiple Quiz Questions</h2>
+    <div id="questionsContainer"></div>
+    <button onclick="addQuestion()">+ Add Question</button>
+    <button onclick="submitQuestions()">✅ Submit All</button>
+    <button onclick="window.location.href='index.html'">🔙 Back to Home</button>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    let questionCount = 0;
+    const container = document.getElementById("questionsContainer");
+    const message = document.getElementById("message");
+    let canCreate = true;
+
+    async function checkExistingQuestions() {
+      try {
+        const res = await fetch("http://localhost:5000/api/quizzes");
+        const data = await res.json();
+        if (data.length > 0) {
+          showMessage("❌ Questions already exist. Please delete them first.", "error");
+          canCreate = false;
+        } else {
+          addQuestion();
+        }
+      } catch (err) {
+        showMessage("❌ Failed to connect to the server.", "error");
+        canCreate = false;
+      }
+    }
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = type;
+    }
+
+    function addQuestion() {
+      if (!canCreate) {
+        alert("❌ Cannot add questions. Delete existing ones first.");
+        return;
+      }
+
+      const block = document.createElement("div");
+      block.className = "question-block";
+      block.innerHTML = `
+        <label>Question</label>
+        <input type="text" class="question-input" placeholder="Enter the question" />
+
+        <label>Option 1</label>
+        <input type="text" class="option-input" placeholder="First option" />
+        <label>Option 2</label>
+        <input type="text" class="option-input" placeholder="Second option" />
+        <label>Option 3</label>
+        <input type="text" class="option-input" placeholder="Third option" />
+
+        <label>Correct Answer (Choose one)</label>
+        <select class="correct-answer">
+          <option value="">-- Select Correct Option --</option>
+          <option value="0">Option 1</option>
+          <option value="1">Option 2</option>
+          <option value="2">Option 3</option>
+        </select>
+      `;
+      container.appendChild(block);
+      questionCount++;
+    }
+
+    async function submitQuestions() {
+      if (!canCreate) {
+        alert("❌ Cannot submit. Please delete existing questions first.");
+        return;
+      }
+
+      showMessage("", "");
+
+      const blocks = document.querySelectorAll(".question-block");
+      const allQuestions = [];
+
+      for (let block of blocks) {
+        const question = block.querySelector(".question-input").value.trim();
+        const options = [...block.querySelectorAll(".option-input")].map(el => el.value.trim());
+        const correctAnswer = block.querySelector(".correct-answer").value;
+
+        if (!question || options.some(opt => !opt) || correctAnswer === "") {
+          showMessage("⚠️ Please fill out all fields correctly.", "error");
+          return;
+        }
+
+        allQuestions.push({
+          question,
+          options,
+          correctAnswer: Number(correctAnswer)
+        });
+      }
+
+      try {
+        const res = await fetch("http://localhost:5000/api/quizzes/bulk", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(allQuestions)
+        });
+        if (res.ok) {
+          showMessage("✅ Questions submitted successfully!", "success");
+          container.innerHTML = "";
+          questionCount = 0;
+          canCreate = false;
+        } else {
+          const errorData = await res.json();
+          showMessage("❌ " + (errorData.error || "Failed to save."), "error");
+        }
+      } catch (err) {
+        showMessage("❌ Connection error while submitting.", "error");
+      }
+    }
+
+    checkExistingQuestions();
+  </script>
+</body>
+</html>
