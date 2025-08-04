@@ -189,6 +189,7 @@
   const usernameInput = document.getElementById("username");
   const quizContainer = document.getElementById("quizContainer");
   const startBtn = document.getElementById("startBtn");
+  //let quizzes = []; // ← waa inuu yahay meel sare oo global ah
 
   let quizzes = [];
   let currentIndex = 0;
@@ -350,12 +351,12 @@ async function fetchQuizzes() {
 
 
 
- viewScoreBtn.addEventListener("click", () => {
-  console.log("View score clicked. quizzes.length =", quizzes.length);
+viewScoreBtn.addEventListener("click", () => {
   const username = usernameInput.value.trim();
   resultEl.textContent = `${username}, Quiz Complete! Your final score: ${score} / ${quizzes.length}`;
   viewScoreBtn.style.display = "none";
 });
+
 
 
 
