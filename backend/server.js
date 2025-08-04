@@ -74,21 +74,19 @@ app.get("/api/quizzes", async (req, res) => {
   }
 });
 
-// Tusaale Express route handler:
-app.post('/api/results', async (req, res) => {
-  const { username, score, total } = req.body;
-
-  if (!username || score == null || total == null) {
-    return res.status(400).json({ message: "Fadlan buuxi dhammaan xogaha." });
-  }
-
+app.post("/api/results", async (req, res) => {
   try {
-    const newResult = new Result({ username, score, total });
+    const { username, score, total } = req.body; // ← add total here
+    if (!username || typeof score !== "number" || typeof total !== "number") {
+      return res.status(400).json({ error: "Invalid result data" });
+    }
+    const newResult = new Result({ username, score, total }); // ← include total
     await newResult.save();
-    res.status(201).json(newResult);
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
+    res.status(201).json({ message: "Result saved" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
+});
 });
 
 
