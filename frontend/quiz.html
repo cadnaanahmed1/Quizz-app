@@ -335,6 +335,7 @@ async function fetchQuizzes() {
   viewScoreBtn.style.display = "inline-block";
 
   const username = usernameInput.value.trim();
+   console.log("Total quizzes:", quizzes.length); // ← HALKAN ku qor
 
   fetch("https://quizz-app-2-b130.onrender.com/api/results", {
   method: "POST",
