@@ -190,7 +190,6 @@
   const quizContainer = document.getElementById("quizContainer");
   const startBtn = document.getElementById("startBtn");
   //let quizzes = []; // ← waa inuu yahay meel sare oo global ah
-  let totalQuestionsAnswered = 0;
 
   let quizzes = [];
   let currentIndex = 0;
@@ -247,18 +246,18 @@ async function fetchQuizzes() {
     viewScoreBtn.style.display = "none";
 
     const quiz = quizzes[currentIndex];
-    questionEl.textContent = `Q${currentIndex + 1}: ${quiz.question}`;
+    questionEl.textContent = Q${currentIndex + 1}: ${quiz.question};
 
     optionsForm.innerHTML = "";
     quiz.options.forEach((option, idx) => {
-      const optionId = `option${idx}`;
+      const optionId = option${idx};
       const label = document.createElement("label");
       label.classList.add("option");
       label.htmlFor = optionId;
-      label.innerHTML = `
+      label.innerHTML = 
         <input type="radio" id="${optionId}" name="option" value="${idx}">
         ${option}
-      `;
+      ;
       optionsForm.appendChild(label);
     });
 
@@ -279,8 +278,6 @@ async function fetchQuizzes() {
   }
 
  submitBtn.addEventListener("click", (e) => {
-   totalQuestionsAnswered++;
-
   e.preventDefault();
   if (answered) return;
 
@@ -338,28 +335,25 @@ async function fetchQuizzes() {
   viewScoreBtn.style.display = "inline-block";
 
   const username = usernameInput.value.trim();
-   
 
- if (currentIndex === quizzes.length - 1) {
   fetch(SCORES_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ 
       username, 
       score, 
-      total: totalQuestionsAnswered,
+      total: quizzes.length
     })
   }).catch((err) => {
     console.error("Failed to auto-save score", err);
   });
-
-  // showFinalResult(); ← KA SAAR TAN WAA NAFTEEDA!
 }
+
 
 
 viewScoreBtn.addEventListener("click", () => {
   const username = usernameInput.value.trim();
-  resultEl.textContent = `${username}, Quiz Complete! Your final score: ${score} / ${quizzes.length}`;
+  resultEl.textContent = ${username}, Quiz Complete! Your final score: ${score} / ${quizzes.length};
   viewScoreBtn.style.display = "none";
 });
 
