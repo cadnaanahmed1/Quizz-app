@@ -307,29 +307,32 @@
   });
 
   function showFinalResult() {
-    questionEl.style.display = "none";
-    optionsForm.style.display = "none";
-    submitBtn.style.display = "none";
-    nextBtn.style.display = "none";
-    viewScoreBtn.style.display = "inline-block";
-  }
+  questionEl.style.display = "none";
+  optionsForm.style.display = "none";
+  submitBtn.style.display = "none";
+  nextBtn.style.display = "none";
+  viewScoreBtn.style.display = "inline-block";
 
-  viewScoreBtn.addEventListener("click", async () => {
-    const username = usernameInput.value.trim();
-    resultEl.textContent = `${username}, Quiz Complete! Your final score: ${score} / ${quizzes.length}`;
-    viewScoreBtn.style.display = "none";
-    backBtn.style.display = "inline-block";
+  const username = usernameInput.value.trim();
 
-    try {
-      await fetch(SCORES_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, score })
-      });
-    } catch (err) {
-      console.error("Failed to save score", err);
-    }
+  // 💾 Auto-save the score immediately after the last question
+  fetch(SCORES_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, score })
+  }).catch((err) => {
+    console.error("Failed to auto-save score", err);
   });
+}
+
+
+  viewScoreBtn.addEventListener("click", () => {
+  const username = usernameInput.value.trim();
+  resultEl.textContent = `${username}, Quiz Complete! Your final score: ${score} / ${quizzes.length}`;
+  viewScoreBtn.style.display = "none";
+  backBtn.style.display = "inline-block";
+});
+
 
   backBtn.addEventListener("click", () => {
     window.location.href = "index.html";
