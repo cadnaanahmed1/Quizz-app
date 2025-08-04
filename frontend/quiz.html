@@ -259,6 +259,8 @@
     optionsForm.addEventListener("change", () => {
       const selected = optionsForm.querySelector('input[type="radio"]:checked');
       submitBtn.disabled = !selected || answered;
+      nextBtn.style.display = "none";
+
     }, { once: true });
 
     // ✅ Halkan ayaa lagu daray shardi cusub
