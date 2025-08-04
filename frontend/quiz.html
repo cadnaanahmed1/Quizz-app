@@ -337,17 +337,18 @@ async function fetchQuizzes() {
   const username = usernameInput.value.trim();
    console.log("Total quizzes:", quizzes.length); // ← HALKAN ku qor
 
-  fetch("https://quizz-app-2-b130.onrender.com/api/results", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    username: "ali",
-    score: 2,
-    total: 5  // ← Halkan ku dar tirada total su’aalaha
-  })
-});
+ fetch(SCORES_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      username, 
+      score, 
+      total: quizzes.length
+    })
+  }).catch((err) => {
+    console.error("Failed to auto-save score", err);
+  });
+}
 
 
 viewScoreBtn.addEventListener("click", () => {
