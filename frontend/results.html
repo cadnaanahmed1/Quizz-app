@@ -113,7 +113,7 @@
   <script>
     async function fetchResults() {
       try {
-        const res = await fetch("http://localhost:5000/api/results");
+        const res = await fetch("https://quizz-app-2-b130.onrender.com/api/results");
         const results = await res.json();
 
         // Sort by score descending
