@@ -3,164 +3,352 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Quiz Leaderboard</title>
+  <title>Radio Button Quiz</title>
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to right, #f8f9fa, #e3f2fd);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1f4037, #99f2c8);
       min-height: 100vh;
-      padding: 40px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      color: #fff;
     }
 
-    h1 {
-      color: #1e88e5;
-      margin-bottom: 30px;
-      font-size: 36px;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-    }
-
-    table {
+    .container {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 35px 30px;
       width: 100%;
-      max-width: 800px;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    th, td {
-      padding: 16px;
-      font-size: 16px;
+      max-width: 600px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
       text-align: center;
     }
 
-    th {
-      background: #1e88e5;
+    #backr {
+      font-size: 8px;
+      text-decoration: none;
+      background-color: #007bff;
       color: white;
+      padding: 5px;
+      border-radius: 2px;
+    }
+
+    #bckkk {
+      margin-top: 10px;
+    }
+
+    h1 {
+      margin-bottom: 25px;
+      font-size: 28px;
       font-weight: bold;
-      letter-spacing: 1px;
     }
 
-    tr:nth-child(even) {
-      background-color: #f6f9fc;
+    input[type="text"] {
+      padding: 12px;
+      width: 100%;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
     }
 
-    tr:hover {
-      background-color: #e3f2fd;
+    .question {
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .option {
+      background: rgba(255, 255, 255, 0.07);
+      display: block;
+      margin: 10px 0;
+      padding: 12px 15px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+    }
+
+    .option:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .option.correct {
+      background-color: #28a74533;
+      border-color: #28a745;
+      color: #28a745;
+    }
+
+    .option.wrong {
+      background-color: #dc354533;
+      border-color: #dc3545;
+      color: #dc3545;
+    }
+
+    .option input[type="radio"] {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px 25px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
-    #backBtn {
-      margin-top: 30px;
-      padding: 12px 25px;
-      font-size: 16px;
-      color: white;
-      background: #1e88e5;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
-      transition: all 0.3s ease;
+    button:hover {
+      background-color: #0056b3;
     }
 
-    #backBtn:hover {
-      background: #1565c0;
-      transform: translateY(-2px);
+    button:disabled {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+
+    #viewScoreBtn {
+      display: none;
+      background-color: #28a745;
+    }
+
+    #backBtn {
+      display: none;
+      background-color: #6c757d;
+    }
+
+    #result {
+      margin-top: 25px;
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #fff;
     }
 
     @media (max-width: 600px) {
-      th, td {
-        padding: 12px 8px;
-        font-size: 14px;
+      .container {
+        padding: 25px 20px;
       }
 
       h1 {
-        font-size: 28px;
+        font-size: 22px;
       }
 
-      #backBtn {
-        font-size: 14px;
-        padding: 10px 20px;
+      button {
+        width: 100%;
       }
     }
   </style>
 </head>
 <body>
-  <h1>Quiz Leaderboard</h1>
+  <div class="container">
+    <h1>Radio Button Quiz</h1>
 
-  <table id="resultsTable">
-    <thead>
-      <tr>
-        <th>Rank</th>
-        <th>Username</th>
-        <th>Score / Total</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Results will be inserted here -->
-    </tbody>
-  </table>
+    <input type="text" id="username" placeholder="Enter your name" required />
+    <button id="startBtn">Start Quiz</button>
 
-  <button id="backBtn">Back to Home</button>
+    <div id="quizContainer" style="display: none;">
+      <div id="question" class="question"></div>
+      <form id="optionsForm"></form>
+    </div>
 
-  <script>
-  async function getDefaultTotal() {
+    <button id="submitBtn" disabled>Submit</button>
+    <button id="nextBtn" disabled>Next Question</button>
+    <button id="viewScoreBtn">View Score</button>
+
+    <div id="bckkk">
+      <a href="index.html" id="backr">Back to Home</a>
+    </div>
+
+    <div id="result"></div>
+    <button id="backBtn">Back to Home</button>
+  </div>
+
+<script>
+  const questionEl = document.getElementById("question");
+  const optionsForm = document.getElementById("optionsForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const resultEl = document.getElementById("result");
+  const backBtn = document.getElementById("backBtn");
+  const viewScoreBtn = document.getElementById("viewScoreBtn");
+  const usernameInput = document.getElementById("username");
+  const quizContainer = document.getElementById("quizContainer");
+  const startBtn = document.getElementById("startBtn");
+
+  let quizzes = [];
+  let currentIndex = 0;
+  let score = 0;
+  let answered = false;
+  let totalQuestionsAnswered = 0;
+
+  const API_URL = "https://quizz-app-2-b130.onrender.com/api/quizzes";
+  const SCORES_URL = "https://quizz-app-2-b130.onrender.com/api/results";
+
+  async function fetchQuizzes() {
     try {
-      const res = await fetch("https://quizz-app-2-b130.onrender.com/api/results/total-default");
-      const data = await res.json();
-      return data.defaultTotal || "?";
-    } catch (e) {
-      console.error("Failed to fetch default total", e);
-      return "?";
-    }
-  }
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error("Failed to fetch quizzes");
+      quizzes = await res.json();
 
-  async function fetchResults() {
-    try {
-      const res = await fetch("https://quizz-app-2-b130.onrender.com/api/results");
-      const results = await res.json();
+      if (quizzes.length === 0) {
+        quizContainer.innerHTML = "<p>No quiz questions available. Please add some first.</p>";
+        submitBtn.style.display = "none";
+        nextBtn.style.display = "none";
+        return;
+      }
 
-      results.sort((a, b) => b.score - a.score);
-
-      // Halkan ka hel total default haddii la waayo mid gaar ah
-      const defaultTotal = await getDefaultTotal();
-
-      const tbody = document.querySelector("#resultsTable tbody");
-      tbody.innerHTML = "";
-
-      results.forEach((result, index) => {
-        const date = new Date(result.date).toLocaleString();
-        const totalToShow = result.total ?? defaultTotal;
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${index + 1}</td>
-          <td>${result.username}</td>
-         
-          <td>${date}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+      loadQuestion();
     } catch (error) {
-      alert("Failed to load results.");
+      quizContainer.innerHTML = "<p>Error loading quizzes. Please try again later.</p>";
       console.error(error);
+      submitBtn.style.display = "none";
+      nextBtn.style.display = "none";
     }
   }
 
-  document.getElementById("backBtn").addEventListener("click", () => {
+  startBtn.addEventListener("click", () => {
+    const name = usernameInput.value.trim();
+    if (!name) {
+      alert("Fadlan geli magacaaga si aad u bilowdo quiz-ka.");
+      return;
+    }
+
+    startBtn.style.display = "none";
+    usernameInput.disabled = true;
+    quizContainer.style.display = "block";
+    submitBtn.style.display = "inline-block";
+    nextBtn.style.display = "inline-block";
+
+    fetchQuizzes();
+  });
+
+  function loadQuestion() {
+    answered = false;
+    submitBtn.disabled = true;
+    nextBtn.disabled = true;
+    resultEl.textContent = "";
+    viewScoreBtn.style.display = "none";
+
+    const quiz = quizzes[currentIndex];
+    questionEl.textContent = `Q${currentIndex + 1}: ${quiz.question}`;
+
+    optionsForm.innerHTML = "";
+    quiz.options.forEach((option, idx) => {
+      const optionId = `option${idx}`;
+      const label = document.createElement("label");
+      label.classList.add("option");
+      label.htmlFor = optionId;
+      label.innerHTML = `
+        <input type="radio" id="${optionId}" name="option" value="${idx}">
+        ${option}
+      `;
+      optionsForm.appendChild(label);
+    });
+
+    optionsForm.addEventListener("change", () => {
+      const selected = optionsForm.querySelector('input[type="radio"]:checked');
+      submitBtn.disabled = !selected || answered;
+    }, { once: true });
+
+    if (currentIndex === quizzes.length - 1) {
+      nextBtn.style.display = "none";
+    } else {
+      nextBtn.textContent = "Next Question";
+    }
+  }
+
+  submitBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (answered) return;
+
+    totalQuestionsAnswered++;
+
+    const quiz = quizzes[currentIndex];
+    const selectedOption = optionsForm.querySelector('input[type="radio"]:checked');
+    if (!selectedOption) return;
+
+    const selectedIndex = Number(selectedOption.value);
+    answered = true;
+    submitBtn.disabled = true;
+    nextBtn.disabled = false;
+
+    const labels = optionsForm.querySelectorAll("label.option");
+    labels.forEach((label, idx) => {
+      const isCorrect = idx === quiz.correctAnswer;
+      const isSelected = idx === selectedIndex;
+
+      if (isCorrect) label.classList.add("correct");
+      if (isSelected && !isCorrect) label.classList.add("wrong");
+      label.querySelector("input").disabled = true;
+    });
+
+    if (selectedIndex === quiz.correctAnswer) {
+      score++;
+    }
+
+    if (currentIndex === quizzes.length - 1) {
+      setTimeout(() => {
+        showFinalResult();
+      }, 1000);
+    }
+  });
+
+  nextBtn.addEventListener("click", () => {
+    currentIndex++;
+    if (currentIndex < quizzes.length) {
+      loadQuestion();
+    } else {
+      showFinalResult();
+    }
+  });
+
+  viewScoreBtn.addEventListener("click", () => {
+    const username = usernameInput.value.trim();
+    resultEl.textContent = `${username}, Quiz Complete! Your final score: ${score} / ${quizzes.length}`;
+    viewScoreBtn.style.display = "none";
+  });
+
+  backBtn.addEventListener("click", () => {
     window.location.href = "index.html";
   });
 
-  fetchResults();
-</script>
+  function showFinalResult() {
+    questionEl.style.display = "none";
+    optionsForm.style.display = "none";
+    submitBtn.style.display = "none";
+    nextBtn.style.display = "none";
+    viewScoreBtn.style.display = "inline-block";
 
+    const username = usernameInput.value.trim();
+
+    if (currentIndex === quizzes.length - 1) {
+      fetch(SCORES_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          score,
+          total: totalQuestionsAnswered,
+        }),
+      }).catch((err) => {
+        console.error("Failed to auto-save score", err);
+      });
+    }
+  }
+</script>
 </body>
 </html>
-
