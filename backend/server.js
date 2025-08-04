@@ -77,17 +77,18 @@ app.get("/api/quizzes", async (req, res) => {
 // Submit a quiz result
 app.post("/api/results", async (req, res) => {
   try {
-    const { username, score } = req.body;
-    if (!username || typeof score !== "number") {
+    const { username, score, total } = req.body; // ✅ KU DAR 'total'
+    if (!username || typeof score !== "number" || typeof total !== "number") {
       return res.status(400).json({ error: "Invalid result data" });
     }
-    const newResult = new Result({ username, score });
+    const newResult = new Result({ username, score, total }); // ✅ KU DAR 'total'
     await newResult.save();
     res.status(201).json({ message: "Result saved" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 
 
