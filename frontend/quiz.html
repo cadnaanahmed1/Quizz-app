@@ -5,152 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Radio Button Quiz</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: linear-gradient(135deg, #1f4037, #99f2c8);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 30px;
-      color: #fff;
-    }
-
-    .container {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 35px 30px;
-      width: 100%;
-      max-width: 600px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-      text-align: center;
-    }
-
-    #backr {
-      font-size: 8px;
-      text-decoration: none;
-      background-color: #007bff;
-      color: white;
-      padding: 5px;
-      border-radius: 2px;
-    }
-
-    #bckkk {
-      margin-top: 10px;
-    }
-
-    h1 {
-      margin-bottom: 25px;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    input[type="text"] {
-      padding: 12px;
-      width: 100%;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-
-    .question {
-      font-size: 1.2em;
-      margin-bottom: 20px;
-      text-align: left;
-    }
-
-    .option {
-      background: rgba(255, 255, 255, 0.07);
-      display: block;
-      margin: 10px 0;
-      padding: 12px 15px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-align: left;
-    }
-
-    .option:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .option.correct {
-      background-color: #28a74533;
-      border-color: #28a745;
-      color: #28a745;
-    }
-
-    .option.wrong {
-      background-color: #dc354533;
-      border-color: #dc3545;
-      color: #dc3545;
-    }
-
-    .option input[type="radio"] {
-      margin-right: 10px;
-      cursor: pointer;
-    }
-
-    button {
-      margin-top: 15px;
-      padding: 12px 25px;
-      font-size: 16px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    button:disabled {
-      background-color: #6c757d;
-      cursor: not-allowed;
-    }
-
-    #viewScoreBtn {
-      display: none;
-      background-color: #28a745;
-    }
-
-    #backBtn {
-      display: none;
-      background-color: #6c757d;
-    }
-
-    #result {
-      margin-top: 25px;
-      font-size: 1.3em;
-      font-weight: bold;
-      color: #fff;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 25px 20px;
-      }
-
-      h1 {
-        font-size: 22px;
-      }
-
-      button {
-        width: 100%;
-      }
-    }
+    /* CSS waa sida aad hore u qortay, ma beddelin */
   </style>
 </head>
 <body>
@@ -178,6 +33,9 @@
   </div>
 
 <script>
+  const API_URL = "https://quizz-app-2-b130.onrender.com/api/quizzes";
+  const SCORES_URL = "https://quizz-app-2-b130.onrender.com/api/results";
+
   const questionEl = document.getElementById("question");
   const optionsForm = document.getElementById("optionsForm");
   const submitBtn = document.getElementById("submitBtn");
@@ -193,10 +51,6 @@
   let currentIndex = 0;
   let score = 0;
   let answered = false;
-  let totalQuestionsAnswered = 0;
-
-  const API_URL = "https://quizz-app-2-b130.onrender.com/api/quizzes";
-  const SCORES_URL = "https://quizz-app-2-b130.onrender.com/api/results";
 
   async function fetchQuizzes() {
     try {
@@ -259,14 +113,17 @@
       optionsForm.appendChild(label);
     });
 
-    optionsForm.addEventListener("change", () => {
+    // Remove previous listener first to avoid stacking listeners
+    optionsForm.onchange = null;
+    optionsForm.onchange = () => {
       const selected = optionsForm.querySelector('input[type="radio"]:checked');
       submitBtn.disabled = !selected || answered;
-    }, { once: true });
+    };
 
     if (currentIndex === quizzes.length - 1) {
       nextBtn.style.display = "none";
     } else {
+      nextBtn.style.display = "inline-block";
       nextBtn.textContent = "Next Question";
     }
   }
@@ -275,16 +132,18 @@
     e.preventDefault();
     if (answered) return;
 
-    totalQuestionsAnswered++;
-
-    const quiz = quizzes[currentIndex];
     const selectedOption = optionsForm.querySelector('input[type="radio"]:checked');
-    if (!selectedOption) return;
+    if (!selectedOption) {
+      alert("Please select an answer before submitting.");
+      return;
+    }
 
-    const selectedIndex = Number(selectedOption.value);
     answered = true;
     submitBtn.disabled = true;
     nextBtn.disabled = false;
+
+    const selectedIndex = Number(selectedOption.value);
+    const quiz = quizzes[currentIndex];
 
     const labels = optionsForm.querySelectorAll("label.option");
     labels.forEach((label, idx) => {
@@ -326,6 +185,30 @@
     window.location.href = "index.html";
   });
 
+  function saveResultToServer() {
+    const username = usernameInput.value.trim();
+    const total = quizzes.length;
+
+    fetch(SCORES_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        score,
+        total,
+      }),
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("Result saved:", data);
+    })
+    .catch((err) => {
+      console.error("Error saving result:", err);
+    });
+  }
+
   function showFinalResult() {
     questionEl.style.display = "none";
     optionsForm.style.display = "none";
@@ -334,20 +217,9 @@
     viewScoreBtn.style.display = "inline-block";
 
     const username = usernameInput.value.trim();
+    resultEl.textContent = `${username}, Quiz Complete! Your final score: ${score} / ${quizzes.length}`;
 
-    if (currentIndex === quizzes.length - 1) {
-      fetch(SCORES_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          score,
-          total: totalQuestionsAnswered,
-        }),
-      }).catch((err) => {
-        console.error("Failed to auto-save score", err);
-      });
-    }
+    saveResultToServer();
   }
 </script>
 </body>
