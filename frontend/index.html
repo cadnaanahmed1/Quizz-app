@@ -95,6 +95,72 @@
       background-color: rgba(0, 0, 0, 0.6);
     }
 
+    /* show pin form */
+
+    /* PIN Modal Overlay */
+.custom-pin-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 15, 15, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Modal Box */
+.custom-modal-content {
+  background: linear-gradient(135deg, #2b5876, #4e4376);
+  padding: 40px 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  color: white;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Input Field */
+.custom-modal-content input {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  outline: none;
+  background: #ffffffcc;
+  color: #333;
+}
+
+/* Submit Button */
+.custom-modal-content button {
+  padding: 12px 25px;
+  font-size: 16px;
+  background: #00c6ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.custom-modal-content button:hover {
+  background: #0072ff;
+}
+
+/* Error Message */
+.error-msg {
+  color: #ff8080;
+  margin-top: 10px;
+  font-size: 14px;
+}
+/*-----------------------------*/
+
     .modal-content {
       background-color: #1e2a38;
       margin: 10% auto;
@@ -305,6 +371,44 @@
  // currentAction = "initial";
  // openModal();
 //};
+
+    //show pinform
+    function showPinForm() {
+  const modal = document.createElement("div");
+  modal.className = "custom-pin-modal";
+  
+  modal.innerHTML = `
+    <div class="custom-modal-content">
+      <h2>Enter Access PIN</h2>
+      <input type="password" id="pinField" placeholder="Enter PIN" />
+      <button id="submitPin">Submit</button>
+      <p id="pinErrorMsg" class="error-msg"></p>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Focus on input when modal shows
+  document.getElementById("pinField").focus();
+
+  // Handle submit
+  document.getElementById("submitPin").addEventListener("click", () => {
+    const pin = document.getElementById("pinField").value.trim();
+    const errorMsg = document.getElementById("pinErrorMsg");
+
+    if (pin === "7452") {
+      modal.remove(); // correct pin
+    } else {
+      errorMsg.textContent = "Incorrect PIN. Try again.";
+      document.getElementById("pinField").value = "";
+      document.getElementById("pinField").focus();
+    }
+  });
+}
+  window.onload = () => {
+  showPinForm(); // modal cusub
+  // Waxaad halkaan ku dari kartaa wax kale haddii loo baahdo
+};
 
 
     window.onclick = function(event) {
