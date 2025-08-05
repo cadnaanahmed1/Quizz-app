@@ -224,16 +224,8 @@
       openModal();
     });
 
-    //closeModal.addEventListener("click", closeModalFunc);
-    closeModal.addEventListener("click", () => {
-  const pin = pinInput.value.trim();
-  if (validatePin(pin)) {
-    closeModalFunc();
-  } else {
-    pinError.textContent = "You must enter the correct PIN before closing.";
-  }
-});
-
+    closeModal.addEventListener("click", closeModalFunc);
+    
 
     function openModal() {
       pinInput.value = "";
@@ -305,21 +297,21 @@
       }
     }
 
-    function validatePin(pin) {
-  return pin === "7452";
-}
+   // function validatePin(pin) {
+  //return pin === "7452";
+//}
 
-    window.onload = () => {
-  currentAction = "initial";
-  openModal();
-};
+ ///   window.onload = () => {
+ // currentAction = "initial";
+ // openModal();
+//};
 
 
-    //window.onclick = function(event) {
-     // if (event.target == pinModal) {
-      //  closeModalFunc();
-     // }
-   // };
+    window.onclick = function(event) {
+      if (event.target == pinModal) {
+         closeModalFunc();
+        }
+    };
 
     
     
