@@ -266,16 +266,28 @@
     const pinError = document.getElementById("pinError");
 
     let currentAction = null;
+  const pinCodes = {
+  create: ["45", "89", "99"],
+  clear: ["45", "89", "99"],
+  clearResults: ["45", "89", "99"],
+  takeQuiz: ["1234", "5678"],
+  viewResults: ["1111", "2222"]
+};
 
     takeQuizBtn.addEventListener("click", () => {
       
-      window.location.href = "quiz.html";
+      //window.location.href = "quiz.html";
+      currentAction = "takeQuiz";
+  openModal();
+      
       
     });
 
     viewResultsBtn.addEventListener("click", () => {
-      
-      window.location.href = "results.html";
+    
+      //window.location.href = "results.html";
+      currentAction = "viewResults";
+  openModal();
       
     });
 
@@ -308,32 +320,37 @@
       pinModal.style.display = "none";
     }
 
-    function validatePin(pin) {
-      const allowedPins = ["45", "89", "99"];
-      return allowedPins.includes(pin);
-    }
+   function validatePin(pin) {
+  if (!currentAction) return false;
+  const validPins = pinCodes[currentAction];
+  return validPins ? validPins.includes(pin) : false;
+}
 
-    submitPinBtn.addEventListener("click", () => {
-      const pin = pinInput.value.trim();
-      if (validatePin(pin)) {
-        pinError.textContent = "";
-        closeModalFunc();
+submitPinBtn.addEventListener("click", () => {
+  const pin = pinInput.value.trim();
+  if (validatePin(pin)) {
+    pinError.textContent = "";
+    closeModalFunc();
 
-        if (currentAction === "create") {
-          window.location.href = "create.html";
-        } else if (currentAction === "clear") {
-          if (confirm("Are you sure you want to clear all questions?")) {
-            clearQuestions();
-          }
-        } else if (currentAction === "clearResults") {
-          if (confirm("Are you sure you want to delete all quiz results?")) {
-            clearResults();
-          }
-        }
-      } else {
-        pinError.textContent = "Invalid PIN. Please try again.";
+    if (currentAction === "create") {
+      window.location.href = "create.html";
+    } else if (currentAction === "clear") {
+      if (confirm("Are you sure you want to clear all questions?")) {
+        clearQuestions();
       }
-    });
+    } else if (currentAction === "clearResults") {
+      if (confirm("Are you sure you want to delete all quiz results?")) {
+        clearResults();
+      }
+    } else if (currentAction === "takeQuiz") {
+      window.location.href = "quiz.html";
+    } else if (currentAction === "viewResults") {
+      window.location.href = "results.html";
+    }
+  } else {
+    pinError.textContent = "Invalid PIN. Please try again.";
+  }
+});
 
     async function clearQuestions() {
       try {
