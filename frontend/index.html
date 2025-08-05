@@ -296,11 +296,24 @@
       }
     }
 
-    window.onclick = function(event) {
-      if (event.target == pinModal) {
-        closeModalFunc();
-      }
-    };
+    function validatePin(pin) {
+  return pin === "7452";
+}
+
+    window.onload = () => {
+  currentAction = "initial";
+  openModal();
+};
+
+
+    //window.onclick = function(event) {
+     // if (event.target == pinModal) {
+      //  closeModalFunc();
+     // }
+   // };
+
+    
+    
   </script>
 </body>
 </html>
