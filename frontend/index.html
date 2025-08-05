@@ -224,7 +224,16 @@
       openModal();
     });
 
-    closeModal.addEventListener("click", closeModalFunc);
+    //closeModal.addEventListener("click", closeModalFunc);
+    closeModal.addEventListener("click", () => {
+  const pin = pinInput.value.trim();
+  if (validatePin(pin)) {
+    closeModalFunc();
+  } else {
+    pinError.textContent = "You must enter the correct PIN before closing.";
+  }
+});
+
 
     function openModal() {
       pinInput.value = "";
