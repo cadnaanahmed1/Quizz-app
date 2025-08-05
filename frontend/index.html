@@ -266,13 +266,17 @@
     const pinError = document.getElementById("pinError");
 
     let currentAction = null;
-  const pinCodes = {
-  create: ["76266"],
-  clear: ["76266"],
-  clearResults: ["76266"],
-  takeQuiz: ["7452"],
-  viewResults: ["3886"]
+ const pinCodesEncoded = {
+  create: ["NzYyNjY="],       
+  clear: ["NzYyNjY="],        
+  clearResults: ["NzYyNjY="], 
+  takeQuiz: ["NzQ1Mg=="],     
+  viewResults: ["Mzg4Ng=="]  
 };
+
+    function decodeBase64(str) {
+  return atob(str);
+}
 
     takeQuizBtn.addEventListener("click", () => {
       
@@ -320,15 +324,19 @@
       pinModal.style.display = "none";
     }
 
-   function validatePin(pin) {
+ function validatePin(inputPin) {
   if (!currentAction) return false;
-  const validPins = pinCodes[currentAction];
-  return validPins ? validPins.includes(pin) : false;
+  const encodedPins = pinCodesEncoded[currentAction];
+  if (!encodedPins) return false;
+
+  // Decode mid mid PIN-ka oo hubi haddii inputPin uu la mid yahay
+  return encodedPins.some(encodedPin => decodeBase64(encodedPin) === inputPin);
 }
 
 submitPinBtn.addEventListener("click", () => {
   const pin = pinInput.value.trim();
-  if (validatePin(pin)) {
+
+  if (validatePin(pin)) {  // Halkan waa function-ka cusub oo ku jira base64 decoding
     pinError.textContent = "";
     closeModalFunc();
 
@@ -351,6 +359,7 @@ submitPinBtn.addEventListener("click", () => {
     pinError.textContent = "Invalid PIN. Please try again.";
   }
 });
+
 
     async function clearQuestions() {
       try {
