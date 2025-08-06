@@ -35,9 +35,10 @@ const Quiz = mongoose.model("Quiz", quizSchema);
 const resultSchema = new mongoose.Schema({
   username: { type: String, required: true },
   score: { type: Number, required: true },
-  //total: { type: Number, required: true }, // ← KAN KU DAR
+  total: { type: Number, required: true }, // ← Waa in la aqbalaa!
   date: { type: Date, default: Date.now }
 });
+
 
 
 const Result = mongoose.model("Result", resultSchema);
@@ -76,15 +77,15 @@ app.get("/api/quizzes", async (req, res) => {
 
 app.post("/api/results", async (req, res) => {
   try {
-    const { username, score } = req.body;
+    const { username, score, total } = req.body;
 
     // Hubinta saxnaanta xogta la keenay
-    if (!username || typeof score !== "number") {
+    if (!username || typeof score !== "number" || typeof total !== "number") {
       return res.status(400).json({ error: "Invalid result data" });
     }
 
     // Diiwaangelinta natiijada cusub
-    const newResult = new Result({ username, score });
+    const newResult = new Result({ username, score, total });
     await newResult.save();
 
     res.status(201).json({ message: "Result saved" });
@@ -92,6 +93,7 @@ app.post("/api/results", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 // Delete all quizzes - for admin (should protect with PIN in real app)
 app.delete("/api/quizzes", async (req, res) => {
