@@ -331,28 +331,29 @@
   });
 
   function showFinalResult() {
-    questionEl.style.display = "none";
-    optionsForm.style.display = "none";
-    submitBtn.style.display = "none";
-    nextBtn.style.display = "none";
-    viewScoreBtn.style.display = "inline-block";
+  questionEl.style.display = "none";
+  optionsForm.style.display = "none";
+  submitBtn.style.display = "none";
+  nextBtn.style.display = "none";
+  viewScoreBtn.style.display = "inline-block";
 
-    const username = usernameInput.value.trim();
+  const username = usernameInput.value.trim();
 
-    if (currentIndex === quizzes.length - 1) {
-      fetch(SCORES_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          score,
-          total: totalQuestionsAnswered,
-        }),
-      }).catch((err) => {
-        console.error("Failed to auto-save score", err);
-      });
-    }
+  if (currentIndex === quizzes.length - 1) {
+    fetch(SCORES_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username,
+        score,
+        total: quizzes.length,  // <-- Halkan u dir tirada guud ee su'aalaha
+      }),
+    }).catch((err) => {
+      console.error("Failed to auto-save score", err);
+    });
   }
+}
+
 </script>
 </body>
 </html>
