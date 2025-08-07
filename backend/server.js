@@ -79,6 +79,7 @@ app.get("/api/quizzes", async (req, res) => {
 
 app.post("/api/results", async (req, res) => {
   try {
+    console.log("Received result data:", req.body);
     const { username, score, total } = req.body;
 
     // Hubinta saxnaanta xogta la keenay
