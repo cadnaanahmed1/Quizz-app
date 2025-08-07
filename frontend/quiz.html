@@ -342,6 +342,7 @@
   const total = quizzes.length;
 
   if (currentIndex === quizzes.length - 1) {
+    console.log("Sending result data:", { username, score, total });
      
     fetch(SCORES_URL, {
       method: "POST",
