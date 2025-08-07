@@ -35,7 +35,7 @@ const Quiz = mongoose.model("Quiz", quizSchema);
 const resultSchema = new mongoose.Schema({
   username: { type: String, required: true },
   score: { type: Number, required: true },
-  total: { type: Number, required: true }, // ← Waa in la aqbalaa!
+  //total: { type: Number, required: true }, // ← Waa in la aqbalaa!
   date: { type: Date, default: Date.now }
 });
 
@@ -80,15 +80,15 @@ app.get("/api/quizzes", async (req, res) => {
 app.post("/api/results", async (req, res) => {
   try {
     console.log("Received result data:", req.body);
-    const { username, score, total } = req.body;
+    const { username, score } = req.body;
 
     // Hubinta saxnaanta xogta la keenay
-    if (!username || typeof score !== "number" || typeof total !== "number") {
+    if (!username || typeof score !== "number") {
       return res.status(400).json({ error: "Invalid result data" });
     }
 
-    // Diiwaangelinta natiijada cusub
-    const newResult = new Result({ username, score, total });
+    // Diiwaangelinta natiijada cusub (oo aan lahayn total)
+    const newResult = new Result({ username, score });
     await newResult.save();
 
     res.status(201).json({ message: "Result saved" });
