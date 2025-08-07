@@ -41,7 +41,9 @@ const resultSchema = new mongoose.Schema({
 
 
 
-const Result = mongoose.model("Result", resultSchema);
+//const Result = mongoose.model("Result", resultSchema);
+const Result = mongoose.models.Result || mongoose.model("Result", resultSchema);
+
 
 // --- Routes ---
 
