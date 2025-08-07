@@ -339,10 +339,10 @@
 
   const username = usernameInput.value.trim();
  
-
+  const total = 5;
 
   if (currentIndex === quizzes.length - 1) {
-     const total = quizzes.length;
+     
     fetch(SCORES_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
